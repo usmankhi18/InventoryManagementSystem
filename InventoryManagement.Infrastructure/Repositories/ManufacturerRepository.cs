@@ -62,7 +62,7 @@ namespace InventoryManagement.Infrastructure.Repositories
 
                 while (reader.Read())
                 {
-                    Manufacturer manufacturer = ManufacturerMappers.MapFromReader(reader,databaseContext);
+                    Manufacturer manufacturer = ManufacturerMappers.MapFromReader(reader);
                     returningManufacturers.Add(manufacturer);
                 }
 
@@ -70,6 +70,11 @@ namespace InventoryManagement.Infrastructure.Repositories
             }
 
             databaseContext.Close();
+
+            foreach (Manufacturer manufacturer in returningManufacturers) {
+                // Get products for the current manufacturer
+                manufacturer.Products = new ProductRepository(databaseContext).GetProductsByManufacturerId(manufacturer.Id);
+            }
 
             return returningManufacturers;
         }
@@ -88,13 +93,15 @@ namespace InventoryManagement.Infrastructure.Repositories
 
                 while (reader.Read())
                 {
-                    manufacturer = ManufacturerMappers.MapFromReader(reader, databaseContext);
+                    manufacturer = ManufacturerMappers.MapFromReader(reader);
                 }
 
                 reader.Close();
             }
 
             databaseContext.Close();
+
+            manufacturer.Products = new ProductRepository(databaseContext).GetProductsByManufacturerId(manufacturer.Id);
 
             return manufacturer;
         }

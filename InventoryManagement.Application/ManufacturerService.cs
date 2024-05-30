@@ -70,6 +70,7 @@ namespace InventoryManagement.Application
                 if (manufacturers == null)
                 {
                     manufacturers = _manufacturerRepository.GetAllManufacturers();
+                    manufacturerCache.SaveManufacturersToCache(RedisKey,manufacturers);
                 }
                 _logger.LogInformation("Manufacturers retrieved successfully.");
                 return manufacturers;

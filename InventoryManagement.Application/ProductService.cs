@@ -76,6 +76,7 @@ namespace InventoryManagement.Application
                 if (products == null)
                 {
                     products = _productRepository.GetAllProducts();
+                    productCache.SaveProductsToCache(RedisKey, products);
                 }
                 _logger.LogInformation("Products retrieved successfully.");
                 return products;

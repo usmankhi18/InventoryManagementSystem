@@ -12,7 +12,7 @@ namespace InventoryManagement.Infrastructure.Mappers
 {
     public class ManufacturerMappers
     {
-        public static Manufacturer MapFromReader(SqlDataReader reader, IDatabaseContext databaseContext)
+        public static Manufacturer MapFromReader(SqlDataReader reader)
         {
             Manufacturer manufacturer = new Manufacturer();
             manufacturer.Id = reader.GetInt32(reader.GetOrdinal("Id"));
@@ -25,8 +25,6 @@ namespace InventoryManagement.Infrastructure.Mappers
             manufacturer.Phone = reader.GetString(reader.GetOrdinal("Phone"));
             manufacturer.LogoPath = reader.GetString(reader.GetOrdinal("LogoPath"));
             manufacturer.Products = new List<Product>();
-            // Get products for the current manufacturer
-            manufacturer.Products = new ProductRepository(databaseContext).GetProductsByManufacturerId(manufacturer.Id);
             return manufacturer;
         }
 
