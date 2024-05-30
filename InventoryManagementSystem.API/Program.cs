@@ -10,6 +10,7 @@ using InventoryManagement.Application.ApplicationCache;
 using System.Net.Mail;
 using InventoryManagement.Infrastructure.HttpClients;
 using InventoryManagement.Infrastructure.Configurations;
+using Common.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 

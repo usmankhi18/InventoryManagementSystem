@@ -29,7 +29,7 @@ namespace InventoryManagement.Application.ApplicationCache
 
         public void ClearCache(string key)
         {
-            _cacheManager.ClearCache(key);
+            _cacheManager.DeleteKeyAsync(key);
         }
     }
 }
