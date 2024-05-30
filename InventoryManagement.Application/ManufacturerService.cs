@@ -1,12 +1,8 @@
-﻿using Global.AppSettings;
-using InventoryManagement.Application.ApplicationCache;
+﻿using InventoryManagement.Application.ApplicationCache;
 using InventoryManagement.Application.Interfaces;
 using InventoryManagement.Domain.Interfaces;
 using InventoryManagement.Domain.Models;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace InventoryManagement.Application
 {
@@ -16,6 +12,7 @@ namespace InventoryManagement.Application
         private readonly ICommonService _commonService;
         private readonly ILogger<ManufacturerService> _logger;
         private readonly ManufacturerCache manufacturerCache;
+        private string RedisKey = "Manufacturers";
 
         public ManufacturerService(ICommonService commonService ,IManufacturerRepository manufacturerRepository, ILogger<ManufacturerService> logger, ManufacturerCache cache)
         {
@@ -32,7 +29,7 @@ namespace InventoryManagement.Application
                 _logger.LogInformation("Adding a new manufacturer.");
                 manufacturer.LogoPath = _commonService.SaveImage(manufacturer.LogoPath);
                 _manufacturerRepository.InsertManufacturers(manufacturer);
-                manufacturerCache.ClearCache(AppSettingKeys.RedisKey);
+                manufacturerCache.ClearCache(RedisKey);
                 _logger.LogInformation("Manufacturer added successfully.");
             }
             catch (Exception ex)
@@ -54,7 +51,7 @@ namespace InventoryManagement.Application
                     return;
                 }
                 _manufacturerRepository.DeleteManufacturer(manufacturer);
-                manufacturerCache.ClearCache(AppSettingKeys.RedisKey);
+                manufacturerCache.ClearCache(RedisKey);
                 _logger.LogInformation("Manufacturer deleted successfully.");
             }
             catch (Exception ex)
@@ -69,7 +66,7 @@ namespace InventoryManagement.Application
             try
             {
                 _logger.LogInformation("Retrieving all manufacturers.");
-                List<Manufacturer> manufacturers = manufacturerCache.GetManufacturersFromCache(AppSettingKeys.RedisKey);
+                List<Manufacturer> manufacturers = manufacturerCache.GetManufacturersFromCache(RedisKey);
                 if (manufacturers == null)
                 {
                     manufacturers = _manufacturerRepository.GetAllManufacturers();
@@ -117,7 +114,7 @@ namespace InventoryManagement.Application
                     manufacturer.LogoPath = _commonService.SaveImage(manufacturer.LogoPath);
                 }
                 _manufacturerRepository.UpdateManufacturer(manufacturer);
-                manufacturerCache.ClearCache(AppSettingKeys.RedisKey);
+                manufacturerCache.ClearCache(RedisKey);
                 _logger.LogInformation("Manufacturer updated successfully.");
             }
             catch (Exception ex)

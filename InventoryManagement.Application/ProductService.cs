@@ -18,6 +18,7 @@ namespace InventoryManagement.Application
         private readonly ICommonService _commonService;
         private readonly ILogger<ProductService> _logger;
         private readonly ProductsCache productCache;
+        private string RedisKey = "Products";
 
         public ProductService(ICommonService commonService, IProductRepository productRepository, ILogger<ProductService> logger, ProductsCache cache)
         {
@@ -34,7 +35,7 @@ namespace InventoryManagement.Application
                 _logger.LogInformation("Adding a new product.");
                 product.LogoPath = _commonService.SaveImage(product.LogoPath);
                 _productRepository.InsertProducts(product);
-                productCache.ClearCache(AppSettingKeys.RedisKey);
+                productCache.ClearCache(RedisKey);
                 _logger.LogInformation("Product added successfully.");
             }
             catch (Exception ex)
@@ -56,7 +57,7 @@ namespace InventoryManagement.Application
                     return;
                 }
                 _productRepository.DeleteProduct(product);
-                productCache.ClearCache(AppSettingKeys.RedisKey);
+                productCache.ClearCache(RedisKey);
                 _logger.LogInformation("Product deleted successfully.");
             }
             catch (Exception ex)
@@ -71,7 +72,7 @@ namespace InventoryManagement.Application
             try
             {
                 _logger.LogInformation("Retrieving all products.");
-                List<Product> products = productCache.GetProductsFromCache(AppSettingKeys.RedisKey);
+                List<Product> products = productCache.GetProductsFromCache(RedisKey);
                 if (products == null)
                 {
                     products = _productRepository.GetAllProducts();
@@ -118,7 +119,7 @@ namespace InventoryManagement.Application
                     product.LogoPath = _commonService.SaveImage(product.LogoPath);
                 }
                 _productRepository.UpdateProduct(product);
-                productCache.ClearCache(AppSettingKeys.RedisKey);
+                productCache.ClearCache(RedisKey);
                 _logger.LogInformation("Product updated successfully.");
             }
             catch (Exception ex)
