@@ -7,6 +7,9 @@ using InventoryManagement.Infrastructure.Repositories;
 using InventoryManagementSystem.API.Extensions;
 using Global.AppSettings;
 using InventoryManagement.Application.ApplicationCache;
+using System.Net.Mail;
+using InventoryManagement.Infrastructure.HttpClients;
+using InventoryManagement.Infrastructure.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,10 @@ builder.Services.LoadKeys(builder.Configuration);
 builder.Services.AddSingleton(new Common.Cache.RedisCacheManager(AppSettingKeys.RedisConnectionString));
 builder.Services.AddSingleton<ManufacturerCache>();
 builder.Services.AddSingleton<ProductsCache>();
+builder.Services.Configure<ServiceUrls>(builder.Configuration.GetSection("ServiceUrls"));
+builder.Services.Configure<ServiceHeaders>(builder.Configuration.GetSection("ServiceHeaders"));
+builder.Services.AddHttpClient<IRestClient, RestClient>();
+builder.Services.AddHttpClient<ISoapClient, SoapClient>();
 builder.Services.AddScoped<IDatabaseContext>(provider => new ApplicationDbContext(AppSettingKeys.SQLServerConnection));
 
 builder.Services.AddScoped<IManufacturerRepository, ManufacturerRepository>();
